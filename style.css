@@ -3,9 +3,10 @@
 	padding: 0;
 	box-sizing: border-box;
 	text-align: center;
+	font-family: 'Montserrat', sans-serif;
 }
 
-/* .hidden {
+.hidden {
 	display: none;
 }
 
@@ -16,7 +17,7 @@
 	padding: 30px;
 	gap: 10px;
 	position: relative;
-} */
+}
 
 .students-table {
 	/* overflow-y: scroll;
@@ -33,6 +34,8 @@
 
 .titles {
 	grid-row: 1 / auto;
+	font-size: 1.2em;
+	font-weight: 700;
 }
 .students-content {
 	display: grid;
@@ -42,29 +45,27 @@
 
 .student-row {
 	display: grid;
-	grid-template-columns: repeat(9, 1fr);
+	grid-template-columns: repeat(10, 1fr);
 	border-radius: 10px;
-}
-/* 
-.delele-btn {
-	background: #92c7eb;
-	background-image: url('http://res.freestockphotos.biz/pictures/15/15107-illustration-of-a-red-close-button-pv.png');
-	background-size: cover;
-	background-position: center;
-	display: inline-block;
-	border: none;
-	padding: 20px;
-	width: 70px;
-	border-radius: 900px;
-	height: 70px;
-	transition: all 0.5s;
-	cursor: pointer;
+	background-color: rgba(116, 203, 243, 0.7);
 }
 
-.delete-btn:hover {
-	width: 75px;
-	height: 75px;
-} */
-.buttons-container {
+.student-row div {
 	display: flex;
+	justify-content: center;
+	align-items: center;
 }
+
+.btn {
+	border: none;
+	color: red;
+	cursor: pointer;
+	background: transparent;
+}
+
+.btn:hover {
+	opacity: 0.4;
+}
+/* .buttons-container {
+	display: flex;
+} */

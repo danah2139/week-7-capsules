@@ -43,7 +43,6 @@ const getStudentsData = async () => {
 };
 
 function renderListStudents() {
-	console.log(studentsList);
 	studentsList.forEach((student) => {
 		renderStudent(student);
 	});
@@ -57,9 +56,24 @@ function renderStudent(student) {
 		studentInfo.textContent = student[key];
 		studentElement.appendChild(studentInfo);
 	}
-	let buttonsContainer = document.createElement('div');
-	buttonsContainer.classList.add('buttons-container');
-	studentElement.appendChild(buttonsContainer);
+	let editBtn = document.createElement('button');
+	editBtn.insertAdjacentHTML('afterbegin', `<i class='far fa-edit fa-3x'></i>`);
+	editBtn.classList.add('btn');
+	studentElement.appendChild(editBtn);
+	//editBtn.addEventListener('click', handleEditStudent);
+
+	let deleteBtn = document.createElement('button');
+	deleteBtn.insertAdjacentHTML(
+		'afterbegin',
+		`<i class='far fa-trash-alt fa-3x'></i>`
+	);
+	deleteBtn.classList.add('btn');
+	studentElement.appendChild(deleteBtn);
+	deleteBtn.addEventListener('click', () => {
+		deleteStudent(student.id);
+		studentsTable.removeChild(studentElement);
+	});
+
 	studentsTable.appendChild(studentElement);
 	student.HTMLElement = studentElement;
 }
@@ -129,6 +143,13 @@ document.querySelector('#sortBy').addEventListener('change', (e) => {
 	sortBy = e.target.value;
 	sortStudentsList();
 });
+
+const handleSearch = (input) => {};
+
+document.querySelector('#myInput').addEventListener('input', (e) => {
+	handleSearch(e.target.value);
+});
+
 async function onLoad() {
 	await getStudentsData();
 	renderListStudents();
@@ -136,7 +157,7 @@ async function onLoad() {
 }
 
 function deleteStudent(id) {
-	let studentId = studentsList.findIndex(id);
+	let studentId = studentsList.findIndex((student) => student.id === id);
 	if (studentId >= 0) {
 		studentsList.splice(studentId, 1);
 	}
