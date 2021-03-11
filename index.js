@@ -1,4 +1,4 @@
-const students = [];
+const studentsList = [];
 const apiKey = '45e704ec8ee73efca64f48c01289ba83';
 //const weatherUrl = `api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`;
 
@@ -15,7 +15,7 @@ const fetchApi = async (url) => {
 	}
 };
 const createStudentObj = (basicStudentData, extraStudentData) => {
-	students.push({
+	studentsList.push({
 		id: basicStudentData.id,
 		firstName: basicStudentData.firstName,
 		lastName: basicStudentData.lastName,
@@ -41,8 +41,22 @@ const getStudentsData = async () => {
 	}
 };
 
+function renderStudent(student) {
+	const studentElement = document.createElement('div');
+	studentElement.classList.add('student-row');
+}
+
 function onLoad() {
 	getStudentsData();
 }
+
+function deleteStudent(id) {
+	let studentId = studentsList.findIndex(id);
+	if (studentId >= 0) {
+		studentsList.splice(studentId, 1);
+	}
+	updateLocalStorage();
+}
+function updateStudent() {}
 
 window.addEventListener('load', onLoad);
