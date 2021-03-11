@@ -7,6 +7,48 @@
 		<title>Document</title>
 	</head>
 	<body>
+		<div class="container">
+			<header class="header">
+				<h1>Capsules Table</h1>
+			</header>
+			<nav class="controls">
+				<label for="sortBy"
+					>Search by:
+					<input
+						type="text"
+						id="myInput"
+						onkeyup="myFunction()"
+						placeholder="Search for names.."
+					/>
+					<select name="sortBy" id="sortBy">
+						<option value="0" label="First Name"></option>
+						<option value="1" label="Last Name"></option>
+						<option value="2" label="Capsule"></option>
+						<option value="3" label="Age"></option>
+						<option value="4" label="City"></option>
+						<option value="5" label="Gender"></option>
+						<option value="6" label="Hobby"></option>
+					</select>
+				</label>
+				<label for="sortBy"
+					>Sort by:
+					<select name="sortBy" id="sortBy">
+						<option value="0" label="First Name"></option>
+						<option value="1" label="Last Name"></option>
+						<option value="2" label="Capsule"></option>
+						<option value="3" label="Age"></option>
+						<option value="4" label="City"></option>
+						<option value="5" label="Gender"></option>
+						<option value="6" label="Hobby"></option>
+					</select>
+				</label>
+			</nav>
+			<main class="students-table">
+				<section class="titles"></section>
+				<section class="students-content"></section>
+			</main>
+		</div>
+
 		<script src="./index.js"></script>
 	</body>
 </html>

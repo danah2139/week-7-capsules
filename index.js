@@ -1,7 +1,7 @@
 const studentsList = [];
 const apiKey = '45e704ec8ee73efca64f48c01289ba83';
 //const weatherUrl = `api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`;
-
+let studentsTable = document.querySelector('.students-content');
 const fetchApi = async (url) => {
 	try {
 		let response = await fetch(url);
@@ -15,7 +15,7 @@ const fetchApi = async (url) => {
 	}
 };
 const createStudentObj = (basicStudentData, extraStudentData) => {
-	studentsList.push({
+	return {
 		id: basicStudentData.id,
 		firstName: basicStudentData.firstName,
 		lastName: basicStudentData.lastName,
@@ -24,7 +24,7 @@ const createStudentObj = (basicStudentData, extraStudentData) => {
 		city: extraStudentData.city,
 		gender: extraStudentData.gender,
 		hobby: extraStudentData.hobby,
-	});
+	};
 };
 
 const getStudentsData = async () => {
@@ -35,19 +35,104 @@ const getStudentsData = async () => {
 		for (let student of studentsData) {
 			let studentId = student.id;
 			const studentData = await fetchApi(studentsUrl + studentId);
-			createStudentObj(student, studentData);
+			let studentObj = createStudentObj(student, studentData);
+			studentsList.push(studentObj);
 			//console.log(studentData);
 		}
 	}
 };
 
+function renderListStudents() {
+	console.log(studentsList);
+	studentsList.forEach((student) => {
+		renderStudent(student);
+	});
+}
 function renderStudent(student) {
 	const studentElement = document.createElement('div');
 	studentElement.classList.add('student-row');
+	studentElement.setAttribute('data-id', student.id);
+	for (key in student) {
+		let studentInfo = document.createElement('div');
+		studentInfo.textContent = student[key];
+		studentElement.appendChild(studentInfo);
+	}
+	let buttonsContainer = document.createElement('div');
+	buttonsContainer.classList.add('buttons-container');
+	studentElement.appendChild(buttonsContainer);
+	studentsTable.appendChild(studentElement);
+	student.HTMLElement = studentElement;
 }
 
-function onLoad() {
-	getStudentsData();
+function sortStudentsList() {
+	let sortFunction;
+	sortBy = document.querySelector('#sortBy').value;
+	switch (sortBy) {
+		case '0':
+			sortFunction = function (studentA, studentB) {
+				return studentA.firstName - studentB.firstName;
+			};
+			break;
+
+		case '1':
+			sortFunction = function (studentA, studentB) {
+				return studentA.lastName - studentB.lastName;
+			};
+			break;
+
+		case '2':
+			sortFunction = function (studentA, studentB) {
+				return studentA.capsule - studentB.capsule;
+			};
+			break;
+
+		case '3':
+			sortFunction = function (studentA, studentB) {
+				return studentA.age - studentB.age;
+			};
+			break;
+
+		case '4':
+			sortFunction = function (studentA, studentB) {
+				return studentA.city - studentB.city;
+			};
+			break;
+
+		case '5':
+			sortFunction = function (studentA, studentB) {
+				return studentA.gender - studentB.gender;
+			};
+			break;
+
+		case '6':
+			sortFunction = function (studentA, studentB) {
+				return studentA.hobby - studentB.hobby;
+			};
+			break;
+
+		default:
+			break;
+	}
+	if (sortFunction && studentsList.length) {
+		studentsList.sort(sortFunction);
+	}
+	updateHTMLRows();
+}
+
+function updateHTMLRows() {
+	studentsList.forEach((student, index) => {
+		student.HTMLElement.style.gridRow = `${index + 1}`;
+	});
+}
+
+document.querySelector('#sortBy').addEventListener('change', (e) => {
+	sortBy = e.target.value;
+	sortStudentsList();
+});
+async function onLoad() {
+	await getStudentsData();
+	renderListStudents();
+	sortStudentsList();
 }
 
 function deleteStudent(id) {
@@ -55,7 +140,7 @@ function deleteStudent(id) {
 	if (studentId >= 0) {
 		studentsList.splice(studentId, 1);
 	}
-	updateLocalStorage();
+	//updateLocalStorage();
 }
 function updateStudent() {}
 
