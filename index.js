@@ -121,7 +121,7 @@ function sortStudentsList() {
 
 function updateHTMLRows() {
 	studentsList.forEach((student, index) => {
-		student.HTMLElement.style.gridRow = `${index + 1}`;
+		student.HTMLElement.style.gridRow = `${index + 2}`;
 	});
 }
 

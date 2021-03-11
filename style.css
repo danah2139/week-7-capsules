@@ -5,7 +5,7 @@
 	text-align: center;
 }
 
-.hidden {
+/* .hidden {
 	display: none;
 }
 
@@ -16,22 +16,33 @@
 	padding: 30px;
 	gap: 10px;
 	position: relative;
-}
+} */
 
 .students-table {
-	overflow-y: scroll;
-	padding-right: 5px;
+	/* overflow-y: scroll;
+	padding-right: 5px; */
+	display: flex;
 }
 
+/* .titles {
+	display: flex;
+	position: fixed;
+	justify-content: center;
+	align-items: center;
+} */
+
+.titles {
+	grid-row: 1 / auto;
+}
 .students-content {
 	display: grid;
 	grid-auto-rows: max-content;
 	gap: 10px;
 }
 
-.students-content .student-row {
+.student-row {
 	display: grid;
-	grid-template-columns: max-content;
+	grid-template-columns: repeat(9, 1fr);
 	border-radius: 10px;
 }
 /* 
