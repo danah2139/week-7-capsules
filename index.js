@@ -4,7 +4,7 @@ let sortBy;
 let searchBy;
 //const weatherUrl = `api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`;
 let studentsTable = document.querySelector('.students-content');
-let currentRow;
+let currentRow = [];
 const fetchApi = async (url) => {
 	try {
 		let response = await fetch(url);
@@ -83,6 +83,7 @@ function renderStudent(student) {
 		if (typeButton.includes('trash')) {
 			deleteStudent(student.id);
 			studentsTable.removeChild(row);
+		} else {
 		}
 	});
 
@@ -188,17 +189,17 @@ function handleEditOrCancel(e) {
 	let row = e.target.parentElement.parentElement;
 	let typeButton = e.target.getAttribute('class');
 	let columns = row.querySelectorAll('div');
+	let buttons = row.querySelectorAll('button');
 	console.log(e.target.getAttribute);
 	if (typeButton.includes('edit')) {
 		columns.forEach((col, index) => {
 			if (index !== 0) {
-				col.innerHTML = `<input value='${col.innerText}'>`;
 				currentRow.push(col.innerText);
+				col.innerHTML = `<input value='${col.innerText}'>`;
 			} else {
 				currentRow.push(col.innerText);
 			}
 		});
-		let buttons = row.querySelectorAll('button');
 		buttons[0].innerHTML = '';
 		buttons[0].innerHTML = '<i class="far fa-times-circle fa-3x"></i>';
 		buttons[1].innerHTML = '';
@@ -207,6 +208,10 @@ function handleEditOrCancel(e) {
 		columns.forEach((col, index) => {
 			col.innerHTML = currentRow[index];
 		});
+		buttons[0].innerHTML = '';
+		buttons[0].innerHTML = `<i class='far fa-edit fa-3x'></i>`;
+		buttons[1].innerHTML = '';
+		buttons[1].innerHTML = `<i class='far fa-trash-alt fa-3x'></i>`;
 	}
 
 	// row.innerHTML = `
