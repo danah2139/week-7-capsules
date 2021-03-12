@@ -4,6 +4,7 @@ let sortBy;
 let searchBy;
 //const weatherUrl = `api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`;
 let studentsTable = document.querySelector('.students-content');
+let currentRow;
 const fetchApi = async (url) => {
 	try {
 		let response = await fetch(url);
@@ -59,22 +60,30 @@ function renderStudent(student) {
 		studentInfo.textContent = student[key];
 		studentElement.appendChild(studentInfo);
 	}
-	let editBtn = document.createElement('button');
-	editBtn.insertAdjacentHTML('afterbegin', `<i class='far fa-edit fa-3x'></i>`);
-	editBtn.classList.add('btn');
-	studentElement.appendChild(editBtn);
-	//editBtn.addEventListener('click', handleEditStudent);
+	let firstBtn = document.createElement('button');
+	firstBtn.insertAdjacentHTML(
+		'afterbegin',
+		`<i class='far fa-edit fa-3x'></i>`
+	);
+	firstBtn.classList.add('btn');
+	studentElement.appendChild(firstBtn);
+	firstBtn.addEventListener('click', handleEditOrCancel);
 
-	let deleteBtn = document.createElement('button');
-	deleteBtn.insertAdjacentHTML(
+	let secondBtn = document.createElement('button');
+	secondBtn.insertAdjacentHTML(
 		'afterbegin',
 		`<i class='far fa-trash-alt fa-3x'></i>`
 	);
-	deleteBtn.classList.add('btn');
-	studentElement.appendChild(deleteBtn);
-	deleteBtn.addEventListener('click', () => {
-		deleteStudent(student.id);
-		studentsTable.removeChild(studentElement);
+	secondBtn.classList.add('btn');
+	studentElement.appendChild(secondBtn);
+	secondBtn.addEventListener('click', () => {
+		let row = e.target.parentElement.parentElement;
+		let typeButton = e.target.getAttribute('class');
+		let columns = row.querySelectorAll('div');
+		if (typeButton.includes('trash')) {
+			deleteStudent(student.id);
+			studentsTable.removeChild(row);
+		}
 	});
 
 	studentsTable.appendChild(studentElement);
@@ -156,15 +165,11 @@ const handleSearch = (input) => {
 	let rows = document.querySelectorAll('.student-row');
 	for (let i = 1; i < rows.length; i++) {
 		let rowId = rows[i].getAttribute('data-id');
-		//console.log(rowId);
 		let col = document.querySelector(
 			`[data-id='${rowId}'] [data-type=${searchBy}]`
 		);
-		// console.log(td[0]);
-		//console.log(col);
 		if (col) {
 			let studentInfo = col.textContent;
-			console.log('txtValue', studentInfo);
 			if (studentInfo.toUpperCase().indexOf(filter) > -1) {
 				rows[i].style.display = '';
 			} else {
@@ -173,10 +178,49 @@ const handleSearch = (input) => {
 		}
 	}
 };
-
 document.querySelector('#myInput').addEventListener('input', (e) => {
 	handleSearch(e.target.value);
 });
+
+//function handleCancelEdit() {}
+
+function handleEditOrCancel(e) {
+	let row = e.target.parentElement.parentElement;
+	let typeButton = e.target.getAttribute('class');
+	let columns = row.querySelectorAll('div');
+	console.log(e.target.getAttribute);
+	if (typeButton.includes('edit')) {
+		columns.forEach((col, index) => {
+			if (index !== 0) {
+				col.innerHTML = `<input value='${col.innerText}'>`;
+				currentRow.push(col.innerText);
+			} else {
+				currentRow.push(col.innerText);
+			}
+		});
+		let buttons = row.querySelectorAll('button');
+		buttons[0].innerHTML = '';
+		buttons[0].innerHTML = '<i class="far fa-times-circle fa-3x"></i>';
+		buttons[1].innerHTML = '';
+		buttons[1].innerHTML = '<i class="far fa-check-circle fa-3x"></i>';
+	} else {
+		columns.forEach((col, index) => {
+			col.innerHTML = currentRow[index];
+		});
+	}
+
+	// row.innerHTML = `
+	// <div>${studentRowData[0]}</td>
+	// <div><input data-type value="${studentRowData[1]}"></div>
+	// <div><input class="a" value="${studentRowData[2]}"></div>
+	// <div><input class="a" value="${studentRowData[3]}"></div>
+	// <div><input class="a" value="${studentRowData[4]}"></div>
+	// <div><input  class="a" value="${studentRowData[5]}"></div>
+	// <div><input class="a" value="${studentRowData[6]}"></div>
+	// <div><input  class="a" value="${studentRowData[7]}"></div>
+	// <button class="btn-i"><i class="far fa-times-circle del"></i></button>
+	// <button href="#" class="btn-i"><i class="far fa-check-circle acc"></i></button>`;
+}
 
 async function onLoad() {
 	await getStudentsData();

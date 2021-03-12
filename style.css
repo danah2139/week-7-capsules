@@ -24,6 +24,7 @@ select {
 	height: 40px;
 	/* text-shadow: 0 0 2px black; */
 	font-size: 1.2em;
+	padding: 2px;
 }
 
 .container {
@@ -72,8 +73,14 @@ select {
 	align-items: center;
 }
 
+.student-row input {
+	width: 9vw;
+	height: 3.5vh;
+}
+
 .btn {
 	border: none;
+	width: auto;
 	color: red;
 	cursor: pointer;
 	background: transparent;
