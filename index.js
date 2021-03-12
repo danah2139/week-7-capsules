@@ -1,5 +1,7 @@
 const studentsList = [];
 const apiKey = '45e704ec8ee73efca64f48c01289ba83';
+let sortBy;
+let searchBy;
 //const weatherUrl = `api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`;
 let studentsTable = document.querySelector('.students-content');
 const fetchApi = async (url) => {
@@ -53,6 +55,7 @@ function renderStudent(student) {
 	studentElement.setAttribute('data-id', student.id);
 	for (key in student) {
 		let studentInfo = document.createElement('div');
+		studentInfo.setAttribute('data-type', key);
 		studentInfo.textContent = student[key];
 		studentElement.appendChild(studentInfo);
 	}
@@ -144,7 +147,32 @@ document.querySelector('#sortBy').addEventListener('change', (e) => {
 	sortStudentsList();
 });
 
-const handleSearch = (input) => {};
+document.querySelector('#searchBy').addEventListener('change', (e) => {
+	searchBy = e.target.value;
+});
+
+const handleSearch = (input) => {
+	let filter = input.toUpperCase();
+	let rows = document.querySelectorAll('.student-row');
+	for (let i = 1; i < rows.length; i++) {
+		let rowId = rows[i].getAttribute('data-id');
+		//console.log(rowId);
+		let col = document.querySelector(
+			`[data-id='${rowId}'] [data-type=${searchBy}]`
+		);
+		// console.log(td[0]);
+		//console.log(col);
+		if (col) {
+			let studentInfo = col.textContent;
+			console.log('txtValue', studentInfo);
+			if (studentInfo.toUpperCase().indexOf(filter) > -1) {
+				rows[i].style.display = '';
+			} else {
+				rows[i].style.display = 'none';
+			}
+		}
+	}
+};
 
 document.querySelector('#myInput').addEventListener('input', (e) => {
 	handleSearch(e.target.value);

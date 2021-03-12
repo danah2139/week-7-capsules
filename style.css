@@ -10,6 +10,22 @@
 	display: none;
 }
 
+select {
+	font-size: 1.2em;
+	cursor: pointer;
+	height: 40px;
+	/* text-shadow: 0 0 2px black; */
+}
+
+#myInput {
+	color: red;
+	text-align: right;
+	cursor: pointer;
+	height: 40px;
+	/* text-shadow: 0 0 2px black; */
+	font-size: 1.2em;
+}
+
 .container {
 	display: grid;
 	grid-template-rows: max-content max-content 1fr max-content;
