@@ -1,10 +1,8 @@
 const studentsList = [];
-const apiKey = '45e704ec8ee73efca64f48c01289ba83';
 let sortBy;
 let searchBy;
-//const weatherUrl = `api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`;
-let studentsTable = document.querySelector('.students-content');
 let currentRow = [];
+let studentsTable = document.querySelector('.students-content');
 const fetchApi = async (url) => {
 	try {
 		let response = await fetch(url);
@@ -17,7 +15,7 @@ const fetchApi = async (url) => {
 		console.log(e);
 	}
 };
-const createStudentObj = (basicStudentData, extraStudentData) => {
+const createStudentObj = (basicStudentData, extraStudentData, cityWeather) => {
 	return {
 		id: basicStudentData.id,
 		firstName: basicStudentData.firstName,
@@ -27,7 +25,20 @@ const createStudentObj = (basicStudentData, extraStudentData) => {
 		city: extraStudentData.city,
 		gender: extraStudentData.gender,
 		hobby: extraStudentData.hobby,
+		cityWeather: cityWeather,
 	};
+};
+
+const getWeatherData = async (cityName) => {
+	const weatherUrl = `http://api.openweathermap.org/data/2.5/weather?q=`;
+	const apiKey = '&APPID=45e704ec8ee73efca64f48c01289ba83';
+	const country = 'israel';
+	const weatherData = await fetchApi(
+		`${weatherUrl}${cityName},${country}${apiKey}`
+	);
+	return weatherData
+		? (parseInt(weatherData.main.temp) - 273.15).toFixed(2)
+		: 'city not found';
 };
 
 const getStudentsData = async () => {
@@ -38,9 +49,9 @@ const getStudentsData = async () => {
 		for (let student of studentsData) {
 			let studentId = student.id;
 			const studentData = await fetchApi(studentsUrl + studentId);
-			let studentObj = createStudentObj(student, studentData);
+			let temp = await getWeatherData(studentData.city);
+			let studentObj = createStudentObj(student, studentData, temp);
 			studentsList.push(studentObj);
-			//console.log(studentData);
 		}
 	}
 };
@@ -54,11 +65,16 @@ function renderStudent(student) {
 	const studentElement = document.createElement('div');
 	studentElement.classList.add('student-row');
 	studentElement.setAttribute('data-id', student.id);
-	for (key in student) {
-		let studentInfo = document.createElement('div');
-		studentInfo.setAttribute('data-type', key);
-		studentInfo.textContent = student[key];
-		studentElement.appendChild(studentInfo);
+	for (const key in student) {
+		if (key !== 'cityWeather' && key !== 'HTMLElement') {
+			let studentInfo = document.createElement('div');
+			if (key === 'city') {
+				studentInfo.setAttribute('tooltip', student['cityWeather']);
+			}
+			studentInfo.setAttribute('data-type', key);
+			studentInfo.textContent = student[key];
+			studentElement.appendChild(studentInfo);
+		}
 	}
 	let firstBtn = document.createElement('button');
 	firstBtn.insertAdjacentHTML(
@@ -76,15 +92,8 @@ function renderStudent(student) {
 	);
 	secondBtn.classList.add('btn');
 	studentElement.appendChild(secondBtn);
-	secondBtn.addEventListener('click', () => {
-		let row = e.target.parentElement.parentElement;
-		let typeButton = e.target.getAttribute('class');
-		let columns = row.querySelectorAll('div');
-		if (typeButton.includes('trash')) {
-			deleteStudent(student.id);
-			studentsTable.removeChild(row);
-		} else {
-		}
+	secondBtn.addEventListener('click', (e) => {
+		handleDeleteOrUpdate(e);
 	});
 
 	studentsTable.appendChild(studentElement);
@@ -190,7 +199,7 @@ function handleEditOrCancel(e) {
 	let typeButton = e.target.getAttribute('class');
 	let columns = row.querySelectorAll('div');
 	let buttons = row.querySelectorAll('button');
-	console.log(e.target.getAttribute);
+	//console.log(e.target.getAttribute);
 	if (typeButton.includes('edit')) {
 		columns.forEach((col, index) => {
 			if (index !== 0) {
@@ -206,6 +215,7 @@ function handleEditOrCancel(e) {
 		buttons[1].innerHTML = '<i class="far fa-check-circle fa-3x"></i>';
 	} else {
 		columns.forEach((col, index) => {
+			//console.log(currentRow[index]);
 			col.innerHTML = currentRow[index];
 		});
 		buttons[0].innerHTML = '';
@@ -213,18 +223,30 @@ function handleEditOrCancel(e) {
 		buttons[1].innerHTML = '';
 		buttons[1].innerHTML = `<i class='far fa-trash-alt fa-3x'></i>`;
 	}
+}
 
-	// row.innerHTML = `
-	// <div>${studentRowData[0]}</td>
-	// <div><input data-type value="${studentRowData[1]}"></div>
-	// <div><input class="a" value="${studentRowData[2]}"></div>
-	// <div><input class="a" value="${studentRowData[3]}"></div>
-	// <div><input class="a" value="${studentRowData[4]}"></div>
-	// <div><input  class="a" value="${studentRowData[5]}"></div>
-	// <div><input class="a" value="${studentRowData[6]}"></div>
-	// <div><input  class="a" value="${studentRowData[7]}"></div>
-	// <button class="btn-i"><i class="far fa-times-circle del"></i></button>
-	// <button href="#" class="btn-i"><i class="far fa-check-circle acc"></i></button>`;
+function handleDeleteOrUpdate(e) {
+	let row = e.target.parentElement.parentElement;
+	let studentId = row.getAttribute('data-id');
+	let currentRow = [];
+	let typeButton = e.target.getAttribute('class');
+	let columns = row.querySelectorAll('div');
+	if (typeButton.includes('trash')) {
+		studentsTable.removeChild(row);
+		deleteStudent(studentId);
+	} else {
+		columns.forEach((col, index) => {
+			if (index === 0) {
+				currentRow.push(parseInt(col.innerText));
+			} else {
+				console.log(col.querySelector('input').value);
+				currentRow.push(col.querySelector('input').value);
+			}
+		});
+		let student = updateStudent(currentRow);
+		studentsTable.removeChild(row);
+		renderStudent(student);
+	}
 }
 
 async function onLoad() {
@@ -234,12 +256,41 @@ async function onLoad() {
 }
 
 function deleteStudent(id) {
-	let studentId = studentsList.findIndex((student) => student.id === id);
-	if (studentId >= 0) {
-		studentsList.splice(studentId, 1);
+	let studentIndex = studentsList.findIndex((student) => student.id === id);
+	if (studentIndex >= 0) {
+		studentsList.splice(studentIndex, 1);
 	}
 	//updateLocalStorage();
 }
-function updateStudent() {}
+async function updateStudent(currentStudent) {
+	let studentIndex = studentsList.findIndex(
+		(student) => student.id === currentStudent[0]
+	);
+	if (studentIndex >= 0) {
+		let i = 0;
+		let temp = '';
+		let studentData = studentsList[studentIndex];
+		for (const key in studentData) {
+			if (key !== 'HTMLElement') {
+				if (key === 'city' && studentData[key] !== currentStudent[i]) {
+					console.log(currentStudent[i]);
+					studentData[key] = currentStudent[i];
+					temp = await getWeatherData(studentData[key]);
+					i++;
+				} else if (key === 'cityWeather' && temp) {
+					studentData[key] = temp;
+				} else if (key !== 'cityWeather') {
+					studentData[key] = currentStudent[i];
+					i++;
+				}
+			} else {
+				studentData[key] = '';
+			}
+		}
+		temp = '';
+		return studentData;
+	}
+	return 'id not found';
+}
 
 window.addEventListener('load', onLoad);

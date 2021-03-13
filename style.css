@@ -78,6 +78,19 @@ select {
 	height: 3.5vh;
 }
 
+*[tooltip] {
+	position: relative;
+}
+*[tooltip]:hover:before {
+	content: attr(tooltip);
+	background-color: #000;
+	color: #fff;
+	top: 1em;
+	position: absolute;
+	white-space: nowrap;
+	font-size: 1.2em;
+}
+
 .btn {
 	border: none;
 	width: auto;
