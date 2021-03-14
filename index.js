@@ -100,12 +100,20 @@ function renderStudent(student) {
 	student.HTMLElement = studentElement;
 }
 
-function sortStudentsList(sortBy) {
+function sortStudentsList() {
 	let sortFunction;
-	//sortBy = document.querySelector('#sortBy').value;
-	sortFunction = function (studentA, studentB) {
-		return studentA[sortBy] - studentB[sortBy];
-	};
+	sortBy = document.querySelector('#sortBy').value;
+	if (sortBy === 'age' || sortBy === 'capsule') {
+		sortFunction = function (studentA, studentB) {
+			return studentA[sortBy] - studentB[sortBy];
+		};
+	} else {
+		sortFunction = function (studentA, studentB) {
+			return studentA[sortBy]
+				.toLowerCase()
+				.localeCompare(studentB[sortBy].toLowerCase());
+		};
+	}
 	if (sortFunction && studentsList.length) {
 		console.log(sortFunction);
 		studentsList.sort(sortFunction);
@@ -121,7 +129,7 @@ function updateHTMLRows() {
 
 document.querySelector('#sortBy').addEventListener('change', (e) => {
 	sortBy = e.target.value;
-	sortStudentsList(sortBy);
+	sortStudentsList();
 });
 
 document.querySelector('#searchBy').addEventListener('change', (e) => {
