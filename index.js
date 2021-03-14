@@ -262,7 +262,7 @@ function deleteStudent(id) {
 	}
 	//updateLocalStorage();
 }
-async function updateStudent(currentStudent) {
+function updateStudent(currentStudent) {
 	let studentIndex = studentsList.findIndex(
 		(student) => student.id === currentStudent[0]
 	);
@@ -275,7 +275,7 @@ async function updateStudent(currentStudent) {
 				if (key === 'city' && studentData[key] !== currentStudent[i]) {
 					console.log(currentStudent[i]);
 					studentData[key] = currentStudent[i];
-					temp = await getWeatherData(studentData[key]);
+					temp = getWeatherData(studentData[key]);
 					i++;
 				} else if (key === 'cityWeather' && temp) {
 					studentData[key] = temp;
