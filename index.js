@@ -100,56 +100,14 @@ function renderStudent(student) {
 	student.HTMLElement = studentElement;
 }
 
-function sortStudentsList() {
+function sortStudentsList(sortBy) {
 	let sortFunction;
-	sortBy = document.querySelector('#sortBy').value;
-	switch (sortBy) {
-		case '0':
-			sortFunction = function (studentA, studentB) {
-				return studentA.firstName - studentB.firstName;
-			};
-			break;
-
-		case '1':
-			sortFunction = function (studentA, studentB) {
-				return studentA.lastName - studentB.lastName;
-			};
-			break;
-
-		case '2':
-			sortFunction = function (studentA, studentB) {
-				return studentA.capsule - studentB.capsule;
-			};
-			break;
-
-		case '3':
-			sortFunction = function (studentA, studentB) {
-				return studentA.age - studentB.age;
-			};
-			break;
-
-		case '4':
-			sortFunction = function (studentA, studentB) {
-				return studentA.city - studentB.city;
-			};
-			break;
-
-		case '5':
-			sortFunction = function (studentA, studentB) {
-				return studentA.gender - studentB.gender;
-			};
-			break;
-
-		case '6':
-			sortFunction = function (studentA, studentB) {
-				return studentA.hobby - studentB.hobby;
-			};
-			break;
-
-		default:
-			break;
-	}
+	//sortBy = document.querySelector('#sortBy').value;
+	sortFunction = function (studentA, studentB) {
+		return studentA[sortBy] - studentB[sortBy];
+	};
 	if (sortFunction && studentsList.length) {
+		console.log(sortFunction);
 		studentsList.sort(sortFunction);
 	}
 	updateHTMLRows();
@@ -163,7 +121,7 @@ function updateHTMLRows() {
 
 document.querySelector('#sortBy').addEventListener('change', (e) => {
 	sortBy = e.target.value;
-	sortStudentsList();
+	sortStudentsList(sortBy);
 });
 
 document.querySelector('#searchBy').addEventListener('change', (e) => {
