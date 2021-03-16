@@ -136,11 +136,8 @@ const handleSearch = (input) => {
 		);
 		if (col) {
 			let studentInfo = col.textContent;
-			if (studentInfo.toUpperCase().indexOf(filter) > -1) {
-				rows[i].style.display = '';
-			} else {
-				rows[i].style.display = 'none';
-			}
+			rows[i].style.display =
+				studentInfo.toUpperCase().indexOf(filter) > -1 ? '' : 'none';
 		}
 	}
 };
