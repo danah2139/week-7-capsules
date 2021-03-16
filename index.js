@@ -46,12 +46,12 @@ const getStudentsData = async () => {
 	}
 };
 
-function renderListStudents() {
-	studentsList.forEach((student) => {
-		renderStudent(student);
-	});
+async function renderListStudents() {
+	for (student of studentsList) {
+		await renderStudent(student);
+	}
 }
-function renderStudent(student) {
+async function renderStudent(student) {
 	const studentElement = document.createElement('div');
 	studentElement.classList.add('student-row');
 	studentElement.setAttribute('data-id', student.id);
@@ -82,8 +82,8 @@ function renderStudent(student) {
 	);
 	secondBtn.classList.add('btn');
 	studentElement.appendChild(secondBtn);
-	secondBtn.addEventListener('click', (e) => {
-		handleDeleteOrUpdate(e);
+	secondBtn.addEventListener('click', async (e) => {
+		await handleDeleteOrUpdate(e);
 	});
 
 	studentsTable.appendChild(studentElement);
@@ -178,7 +178,7 @@ function handleEditOrCancel(e) {
 	}
 }
 
-function handleDeleteOrUpdate(e) {
+async function handleDeleteOrUpdate(e) {
 	let row = e.target.parentElement.parentElement;
 	let studentId = row.getAttribute('data-id');
 	let currentRow = [];
@@ -196,7 +196,7 @@ function handleDeleteOrUpdate(e) {
 				currentRow.push(col.querySelector('input').value);
 			}
 		});
-		let student = updateStudent(currentRow);
+		let student = await updateStudent(currentRow);
 		studentsTable.removeChild(row);
 		renderStudent(student);
 	}
@@ -204,7 +204,7 @@ function handleDeleteOrUpdate(e) {
 
 async function onLoad() {
 	await getStudentsData();
-	renderListStudents();
+	await renderListStudents();
 	sortStudentsList();
 }
 
@@ -215,7 +215,7 @@ function deleteStudent(id) {
 	}
 	//updateLocalStorage();
 }
-function updateStudent(currentStudent) {
+async function updateStudent(currentStudent) {
 	let studentIndex = studentsList.findIndex(
 		(student) => student.id === currentStudent[0]
 	);
@@ -226,9 +226,10 @@ function updateStudent(currentStudent) {
 		for (const key in studentData) {
 			if (key !== 'HTMLElement') {
 				if (key === 'city' && studentData[key] !== currentStudent[i]) {
-					console.log(currentStudent[i]);
+					//console.log(currentStudent[i]);
 					studentData[key] = currentStudent[i];
-					temp = getWeatherData(studentData[key]);
+					console.log(studentData[key]);
+					temp = await getWeatherData(studentData[key]);
 					i++;
 				} else if (key === 'cityWeather' && temp) {
 					studentData[key] = temp;
