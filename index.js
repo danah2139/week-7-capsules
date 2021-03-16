@@ -115,7 +115,7 @@ function sortStudentsList() {
 		};
 	}
 	if (sortFunction && studentsList.length) {
-		console.log(sortFunction);
+		//console.log(sortFunction);
 		studentsList.sort(sortFunction);
 	}
 	updateHTMLRows();
