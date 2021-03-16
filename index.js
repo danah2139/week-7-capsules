@@ -16,17 +16,7 @@ const fetchApi = async (url) => {
 	}
 };
 const createStudentObj = (basicStudentData, extraStudentData, cityWeather) => {
-	return {
-		id: basicStudentData.id,
-		firstName: basicStudentData.firstName,
-		lastName: basicStudentData.lastName,
-		capsule: basicStudentData.capsule,
-		age: extraStudentData.age,
-		city: extraStudentData.city,
-		gender: extraStudentData.gender,
-		hobby: extraStudentData.hobby,
-		cityWeather: cityWeather,
-	};
+	return { ...basicStudentData, ...extraStudentData, ...cityWeather };
 };
 
 const getWeatherData = async (cityName) => {
